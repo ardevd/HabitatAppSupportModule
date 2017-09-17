@@ -12,8 +12,6 @@ function HabitatAppSupport (id, controller) {
 
     self.ANDROID = "android";
 
-    self.FCM_ANDROID_TOKEN = "";
-
     // stores object references of callback functions for removing event listener
     self.deviceUpdatesCallbackWrapper = {};
     self.notificationUpdatesCallbackWrapper = {};
@@ -193,7 +191,7 @@ HabitatAppSupport.prototype.init = function (config) {
                         }
                     };
 
-                    self.notifyListener(message, it.os);
+                    self.notifyListener(device, it.token, "device:change:metrics:level");
                 }
             });
         } else {
@@ -231,7 +229,7 @@ HabitatAppSupport.prototype.init = function (config) {
                         }
                     }
 
-                    self.notifyListener(message, it.os);
+                    self.notifyListener(notification, it.token, "notification:add");
                 }
             });
         }
@@ -434,7 +432,7 @@ HabitatAppSupport.prototype.createHabitatAppSupportPhone = function(deviceToken,
                     }
 
                     if (message) {
-                        self.notifyListener(message, os);
+                        self.notifyListener(alarmMessage, deviceToken, "alarm:message");
                     }
                 } else {
                     console.log("(Habitat App Support) Phone: Error occurrd during alarm command handling!");
@@ -461,7 +459,7 @@ HabitatAppSupport.prototype.createHabitatAppSupportPhone = function(deviceToken,
 
                     if (message) {
                         console.log("Habitat App Support) Phone: Sending push test to: " + title);
-                        self.notifyListener(message, os);
+                        self.notifyListener(data, deviceToken, "alarm:message");
                     }
                 } else {
                     console.log("(Habitat App Support) Phone: Error occurrd during alarm command handling!");
@@ -520,30 +518,29 @@ HabitatAppSupport.prototype.createPresenceMobilePhone = function(title, counter)
     }
 };
 
-HabitatAppSupport.prototype.notifyListener = function(message, os) {
+HabitatAppSupport.prototype.notifyListener = function(message, token, type) {
     var self = this;
 
-    var fcmToken;
-
-    if (os === self.ANDROID) {
-        fcmToken = self.FCM_ANDROID_TOKEN;
+    var messageData = {
+      message_text : message,
+      device_token : token,
+      message_type : type
     }
 
-    if (fcmToken) {
+    if (token) {
         var req = {
-            url: "https://fcm.googleapis.com/fcm/send",
+            url: "https://us-central1-habitat-app-33c0b.cloudfunctions.net/deviceNotification",
             method: "POST",
             headers: {
-                 'Authorization': 'key=' + fcmToken,
                  'Content-Type': 'application/json'
             },
+            data: JSON.stringify(messageData),
             async: true,
-            data: JSON.stringify(message), // message contains also device token (to: ...)
             success: function(response) {
                 console.log("(Habitat App Support) Notify listener success");
             },
             error: function(response) {
-                console.log("(Habitat App Support) Notify listener failed");
+                console.log("(Habitat App Support) Notify listener failed: " + response.statusText);
             }
         };
 
@@ -861,7 +858,7 @@ HabitatAppSupport.prototype.sendPushMessage = function (notification) {
         }
 
         if (message) {
-            self.notifyListener(message, it.os);
+            self.notifyListener(notification, it.token, "alarm:event");
         }
     });
 };
@@ -893,7 +890,7 @@ HabitatAppSupport.prototype.sendPushMessageWithDelay = function () {
                 }
 
                 if (message) {
-                    self.notifyListener(message, it.os);
+                    self.notifyListener(collectMessage, it.token, "alarm:event");
                 }
             });
 
