@@ -442,26 +442,15 @@
                   "required": false
                 },
                 "dev_matchValue": {
-                  "type": "object",
                   "dependencies": "dev_logLevel",
-                  "properties": {
-                    "dev_matchValueOperation": {
-                      "type": "string",
-                      "enum": [
-                        "<",
-                        ">",
-                        "=",
-                        "<=",
-                        ">="
-                      ],
-                      "required": false,
-                      "title": "__l_dev_matchValueOperation__"
-                    },
-                    "dev_matchValueOperand": {
-                      "pattern": "[0-9]*",
-                      "required": false
-                    }
-                  }
+                  "type": "string",
+                  "enum": [
+                    "all",
+                    "open",
+                    "close"
+                  ],
+                  "title": "__l_dev_matchValue__",
+                  "required": true
                 }
               }
             },
@@ -986,25 +975,13 @@
                   "dependencies": {
                     "dev_logLevel": "notifications"
                   },
-                  "label": "__l_dev_matchValue__",
-                  "fields": {
-                    "dev_matchValueOperation": {
-                      "type": "select",
-                      "optionLabels": [
-                        "<",
-                        ">",
-                        "=",
-                        "<=",
-                        ">="
-                      ],
-                      "label": "__l_dev_matchValueOperation__",
-                      "helper": "__h_dev_matchValueOperation__"
-                    },
-                    "dev_matchValueOperand": {
-                      "label": "__l_dev_matchValueOperand__",
-                      "helper": "__h_dev_matchValueOperand__"
-                    }
-                  }
+                  "helper": "__h_dev_matchValue__",
+                  "type": "select",
+                  "optionLabels": [
+                    "All",
+                    "Open",
+                    "Close"
+                  ]
                 }
               }
             },
