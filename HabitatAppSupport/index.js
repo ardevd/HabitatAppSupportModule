@@ -331,12 +331,12 @@ HabitatAppSupport.prototype.init = function (config) {
                 deviceId = device.dev_doorLock.dev_select;
                 level = device.dev_doorLock.dev_logLevel;
                 message = device.dev_doorLock.dev_message;
-                if (typeof device.dev_doorLock.dev_matchValue !== 'undefined') {
-                    if ((typeof device.dev_doorLock.dev_matchValue.dev_matchValueOperation !== 'undefined')&&
-                        (typeof device.dev_doorLock.dev_matchValue.dev_matchValueOperand !== 'undefined'))
-                        comparator = device.dev_doorLock.dev_matchValue.dev_matchValueOperation + device.dev_doorLock.dev_matchValue.dev_matchValueOperand;
-                } else
+                if (typeof device.dev_doorLock.dev_matchValue !== 'undefined' && device.dev_doorLock.dev_matchValue !== 'all') {
+                    comparator = "=='"+ device.dev_doorLock.dev_matchValue + "'";
+                  } else {
                     comparator = null;
+                  }
+
             } else if (typeof device.dev_thermostat !== 'undefined'){
                 deviceId = device.dev_thermostat.dev_select;
                 level = device.dev_thermostat.dev_logLevel;
