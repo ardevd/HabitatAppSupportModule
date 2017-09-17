@@ -6,7 +6,7 @@
   "homepage": "https://github.com/ardevd/HabitatAppSupportModule",
   "icon": "icon.png",
   "moduleName": "HabitatAppSupport",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "maturity": "beta",
   "defaults": {
     "title": "__m_title__",
